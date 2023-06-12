@@ -11,3 +11,9 @@ function esc(string $str) : string
 {
     return htmlspecialchars($str);
 }
+
+function redirect($path)
+{
+    header("Location: " .ROOT. $path);
+    die;
+}
