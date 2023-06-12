@@ -1,6 +1,6 @@
 <?php
 
-class Controller
+trait Controller
 {
     public function view($name)
     {
@@ -11,8 +11,5 @@ class Controller
         } else {
             require_once("../app/views/404.view.php");
         }
-
-
     }
-
 }

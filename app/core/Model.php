@@ -6,6 +6,14 @@ trait Model
 
     protected $limit = 10;
     protected $offset = 0;
+    protected $order_type = 'desc';
+    protected $order_column = 'id';
+
+    public function findAll()
+    {
+        $query = "SELECT * FROM $this->table ORDER BY $this->order_column $this->order_type LIMIT $this->limit OFFSET $this->offset";
+        return $this->query($query);
+    }
 
     public function where($data, $data_not = [])
     {
@@ -22,7 +30,7 @@ trait Model
         }
         $query = trim($query, " && ");
 
-        $query .= " limit $this->limit offset $this->offset";
+        $query .= " ORDER BY $this->order_column $this->order_type limit $this->limit offset $this->offset";
         $data = array_merge($data, $data_not);
 
         return $this->query($query, $data);
@@ -57,6 +65,18 @@ trait Model
 
     public function insert($data)
     {
+        /** remove not allowed columns  **/
+        if(!empty($this->allowedColumns))
+        {
+            foreach($data as $key => $value)
+            {
+                if(!in_array($key, $this->allowedColumns))
+                {
+                    unset($data[$key]);
+                }
+            }
+        }
+        
         $keys = array_keys($data);
 
         $query = "INSERT INTO $this->table (".implode(",", $keys).") VALUES (:".implode(",:",$keys).")";
@@ -66,6 +86,18 @@ trait Model
 
     public function update($id_value, $data, $id_column_name = 'id')
     {
+        /** remove not allowed columns  **/
+        if(!empty($this->allowedColumns))
+        {
+            foreach($data as $key => $value)
+            {
+                if(!in_array($key, $this->allowedColumns))
+                {
+                    unset($data[$key]);
+                }
+            }
+        }
+
         $keys = array_keys($data);
         $query = "UPDATE $this->table SET ";
 

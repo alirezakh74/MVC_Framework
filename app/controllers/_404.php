@@ -1,7 +1,9 @@
 <?php
 
-class _404 extends Controller
+class _404
 {
+    use Controller;
+    
     public function index()
     {
         echo "Error 404: controller page not found<br>";
